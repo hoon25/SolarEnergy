@@ -1,0 +1,58 @@
+plugins {
+	id 'org.springframework.boot' version '2.4.5'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'solar'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	//spring security
+	compile "org.springframework.boot:spring-boot-starter-security"
+
+	//mybatis
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.3'
+
+
+	//mysql connector
+	runtimeOnly 'mysql:mysql-connector-java'
+
+	//lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// spring web
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	//javax validation
+	implementation 'javax.validation:validation-api'
+
+	//JWT Token
+	implementation 'com.auth0:java-jwt:3.16.0'
+
+	//jjwt
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	// JAX-B dependencies for JDK 9+
+//	implementation "javax.xml.bind:jaxb-api:2.2.11"
+//	implementation "com.sun.xml.bind:jaxb-core:2.2.11"
+//	implementation "com.sun.xml.bind:jaxb-impl:2.2.11"
+//	implementation "javax.activation:activation:1.1.1"
+
+	// JAX-B dependencies for JDK 9+
+	implementation "javax.xml.bind:jaxb-api:2.3.1"
+	implementation "org.glassfish.jaxb:jaxb-runtime:2.3.1"
+
+}
+
+test {
+	useJUnitPlatform()
+}
