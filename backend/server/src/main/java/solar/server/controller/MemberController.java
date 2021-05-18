@@ -30,19 +30,26 @@ public class MemberController {
             .userPwd(passwordEncoder.encode(member.get("userPwd")))
             .userLoc(member.get("userLoc"))
             .userVolume(Long.parseLong(member.get("userVolume")))
-            .roles(Collections.singletonList("userRole"))
+//            .roles(Collections.singletonList("userRole"))
+//            .roles(Collections.singletonList("USER"))
             .build());
+        System.out.println(member);
     }
 
     // 로그인
     @PostMapping("/login")
     public String login(@RequestBody Map<String, String> loginUser) {
         Member member = memberMapper.selectUser(loginUser.get("userId"))
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 E-MAIL 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 ID 입니다."));
         if (!passwordEncoder.matches(loginUser.get("userPwd"), member.getPassword())){
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
-//        return jwtTokenProvider.createToken(member.getUsername(),member.getRoles());
+
+        String loginId = jwtTokenProvider.getUserPk(jwtTokenProvider.createToken(member.getUsername(),member.getRoles()));
+        String loginToken = jwtTokenProvider.createToken(member.getUsername(),member.getRoles());
+        System.out.println("loginId = " + loginId);
+        System.out.println("loginToken = " + loginToken);
+
         return jwtTokenProvider.createToken(member.getUsername(),member.getRoles());
     }
 
