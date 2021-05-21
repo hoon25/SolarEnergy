@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="solar.server.mapper.MonitoringMapper">
+    <select id="getMonitoringData" parameterType="String" resultType="solar.server.domain.monitoring.Month">
+        SELECT mp.month,
+               mp.mpredPower,
+               mr.mrealPower,
+               mr.userId,
+               mp.Loc
+        FROM monPredPower_tb as mp
+            JOIN monRealPower_tb as mr
+                ON mp.month = mr.month
+        where mr.userId = #{userId} and mp.Loc = #{userLoc};
+    </select>
+</mapper>

@@ -21,7 +21,11 @@ dependencies {
 
 
 	//mysql connector
-	runtimeOnly 'mysql:mysql-connector-java'
+//	runtimeOnly 'mysql:mysql-connector-java'
+
+
+	//mariadb connector
+	compile "org.mariadb.jdbc:mariadb-java-client:2.6.0"
 
 	//lombok
 	compileOnly 'org.projectlombok:lombok'
