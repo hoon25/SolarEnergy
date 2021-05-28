@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="solar.server.mapper.MonitoringMapper">
-    <select id="getMonitoringData" parameterType="String" resultType="solar.server.domain.monitoring.Month">
+
+    <select id="getMonthData" parameterType="String" resultType="solar.server.domain.monitoring.Month">
         SELECT mp.month,
                mp.mpredPower,
                mr.mrealPower,
@@ -13,4 +14,43 @@
                 ON mp.month = mr.month
         where mr.userId = #{userId} and mp.Loc = #{userLoc};
     </select>
+
+    <select id="getDayData" parameterType="String" resultType="solar.server.domain.monitoring.Day">
+        SELECT dp.year,
+               dp.month,
+               dp.day,
+               dp.dpredPower,
+               dr.drealPower,
+               dr.userId,
+               dp.locCode
+        FROM dayPredPower_tb as dp
+                 JOIN dayRealPower_tb as dr
+                      ON dp.day = dr.day
+                JOIN location_tb as location
+                    ON dp.locCode = location.locCode
+        where dr.userId = #{userId} and dp.locCode = #{userLoc} and dp.year = dr.year and dp.month = dr.month;
+    </select>
+
+    <select id="getHourData" parameterType="String" resultType="solar.server.domain.monitoring.Hour">
+        SELECT hp.year,
+               hp.month,
+               hp.day,
+               hp.hour,
+               hp.hpredPower,
+               hr.hrealPower,
+               hr.userId,
+               hp.locCode
+        FROM hourPredPower_tb as hp
+                 JOIN hourRealPower_tb as hr
+                      ON hp.hour = hr.hour
+                 JOIN location_tb as location
+                      ON hp.locCode = location.locCode
+        where hr.userId = #{userId} and hp.locCode = #{userLoc} and hp.year = hr.year and hp.month = hr.month and hp.day = hr.day;
+    </select>
+
+    <insert id="sethRealPower">
+        INSERT INTO hourRealPower_tb(year, month, day, hour, hrealPower, userId)
+        VALUES (#{year}, #{month}, #{day}, #{hour}, #{hRealPower}, #{userId})
+    </insert>
+
 </mapper>
