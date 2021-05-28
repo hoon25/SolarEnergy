@@ -9,11 +9,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Month {
+public class WeatherFct {
     int year;
     int month;
-    Double mpredPower;
-    Double mrealPower;
-    String userId;
+    int day;
+    int hour;
+    double temperature;
+    double humidity;
+    double windDirection;
+    double windSpeed;
+    double cloud;
     String locName;
 }

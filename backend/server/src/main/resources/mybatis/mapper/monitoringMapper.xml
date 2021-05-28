@@ -4,15 +4,18 @@
 <mapper namespace="solar.server.mapper.MonitoringMapper">
 
     <select id="getMonthData" parameterType="String" resultType="solar.server.domain.monitoring.Month">
-        SELECT mp.month,
+        SELECT mr.year,
+               mr.month,
                mp.mpredPower,
                mr.mrealPower,
                mr.userId,
-               mp.Loc
+               location.locName
         FROM monPredPower_tb as mp
             JOIN monRealPower_tb as mr
                 ON mp.month = mr.month
-        where mr.userId = #{userId} and mp.Loc = #{userLoc};
+            JOIN location_tb as location
+                 ON mp.bigRegion = location.bigRegion
+        where mr.userId = #{userId} and location.locName = #{userLoc} and mp.year = mr.year;
     </select>
 
     <select id="getDayData" parameterType="String" resultType="solar.server.domain.monitoring.Day">
@@ -28,7 +31,7 @@
                       ON dp.day = dr.day
                 JOIN location_tb as location
                     ON dp.locCode = location.locCode
-        where dr.userId = #{userId} and dp.locCode = #{userLoc} and dp.year = dr.year and dp.month = dr.month;
+        where dr.userId = #{userId} and location.locName = #{userLoc} and dp.year = dr.year and dp.month = dr.month;
     </select>
 
     <select id="getHourData" parameterType="String" resultType="solar.server.domain.monitoring.Hour">
@@ -45,12 +48,50 @@
                       ON hp.hour = hr.hour
                  JOIN location_tb as location
                       ON hp.locCode = location.locCode
-        where hr.userId = #{userId} and hp.locCode = #{userLoc} and hp.year = hr.year and hp.month = hr.month and hp.day = hr.day;
+        where hr.userId = #{userId} and location.locName = #{userLoc} and hp.year = hr.year and hp.month = hr.month and hp.day = hr.day;
     </select>
+
+    <select id="getWeatherFctData" parameterType="String" resultType="solar.server.domain.monitoring.WeatherFct">
+        SELECT wf.year,
+               wf.month,
+               wf.day,
+               wf.hour,
+               wf.temperature,
+               wf.humidity,
+               wf.windDirection,
+               wf.windSpeed,
+               wf.cloud,
+               location.locName
+        FROM weatherFct_tb as wf
+            JOIN location_tb as location
+                ON wf.locCode = location.locCode
+        WHERE location.locName = #{userLoc}
+    </select>
+
+
 
     <insert id="sethRealPower">
         INSERT INTO hourRealPower_tb(year, month, day, hour, hrealPower, userId)
         VALUES (#{year}, #{month}, #{day}, #{hour}, #{hRealPower}, #{userId})
     </insert>
+
+    <insert id="setdRealPower">
+        INSERT INTO dayRealPower_tb(dRealId, year, month, day, drealPower, userId)
+        VALUES (#{dRealId}, #{year}, #{month}, #{day}, #{dRealPower}, #{userId})
+    </insert>
+
+    <update id="updatedRealPower">
+        UPDATE dayRealPower_tb set drealPower = drealPower + #{dRealPower} where dRealId = #{dRealId}
+    </update>
+
+    <insert id="setmRealPower">
+        INSERT INTO monRealPower_tb(mRealId, year, month, mrealPower, userId)
+        VALUES (#{mRealId}, #{year}, #{month}, #{mRealPower}, #{userId})
+    </insert>
+
+    <update id="updatemRealPower">
+        UPDATE monRealPower_tb set mrealPower = mrealPower + #{mRealPower} where mRealId = #{mRealId}
+    </update>
+
 
 </mapper>
