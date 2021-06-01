@@ -1,4 +1,4 @@
-package solar.server.domain.mqtt;
+package solar.server.domain.monitoring;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,14 +20,4 @@ public class MinuteMqtt {
     Object illumination;
     Object lastCleanTime;
 
-
-
-//    double temperature;
-//    double humidity;
-//
-//    String panelCover;
-//    int angular;
-//    double panelTemperature;
-//    double illumination;
-//    String lastCleanTime;
 }

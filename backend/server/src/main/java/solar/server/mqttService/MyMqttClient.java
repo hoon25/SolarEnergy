@@ -1,4 +1,4 @@
-package solar.server.mqtt;
+package solar.server.mqttService;
 
 import org.eclipse.paho.client.mqttv3.*;
 

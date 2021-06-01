@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="solar.server.mapper.SearchEnergyPredicMapper">
+
+
+  <select id="getSearchEnergyPredic" parameterType="String" resultType="solar.server.domain.searchEnergyPredic.PredicData">
+      <![CDATA[
+    SELECT mp.year,
+           mp.month,
+           mp.mpredPower * ${volume} / 10000 as mpredPower,
+           location.locName
+    FROM monPredPower_tb as mp
+        JOIN location_tb as location
+            ON mp.bigRegion = location.bigRegion
+    WHERE location.locName = #{locName}
+      ]]>
+
+  </select>
+
+
+
+</mapper>

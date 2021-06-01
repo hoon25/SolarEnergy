@@ -7,11 +7,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import solar.server.domain.Member;
 import solar.server.domain.Monitoring;
+import solar.server.domain.ServerTime;
 import solar.server.domain.monitoring.MonitoringMember;
-import solar.server.domain.mqtt.MinuteMqtt;
+import solar.server.domain.monitoring.MinuteMqtt;
 import solar.server.mapper.MemberMapper;
 import solar.server.mapper.MonitoringMapper;
-import solar.server.mqtt.MyMqttClient;
+import solar.server.mqttService.MyMqttClient;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -31,9 +32,11 @@ public class MonitoringService {
 
     public String getUserId(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         String userId = authentication.getName();
         return userId;
     }
+
 
 
 
@@ -41,7 +44,9 @@ public class MonitoringService {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        String userId = authentication.getName();
         String userId = getUserId();
+        System.out.println(userId);
         Optional<Member> member = memberMapper.selectUser(userId);
+
         String userLoc = member.get().getUserLoc();
         Long userVolume = member.get().getUserVolume();
 
@@ -50,6 +55,13 @@ public class MonitoringService {
 
     // 모니터링 데이터 구성
     private Monitoring getMonitoring(String userId, String userLoc, Long userVolume) {
+
+        ServerTime serverTime = getServerTime();
+        String year = serverTime.getYear();
+        String month = serverTime.getMonth();
+        String day = serverTime.getDay();
+        String hour = serverTime.getHour();
+
 
         MonitoringMember monitoringMember = MonitoringMember.builder()
                                                 .userId(userId)
@@ -60,8 +72,10 @@ public class MonitoringService {
         MinuteMqtt minuteMqtt = getMinuteMqtt();
 
         return Monitoring.builder()
+                .serverTime(getServerTime())
                 .monitoringMember(monitoringMember)
-                .weatherFct(monitoringMapper.getWeatherFctData(userLoc))
+                .weatherFct(monitoringMapper.getWeatherFctData(year,month,day,hour,userLoc))
+                .sunTime(monitoringMapper.getSunTimeData(month,day))
                 .month(monitoringMapper.getMonthData(userId, userLoc))
                 .day(monitoringMapper.getDayData(userId, userLoc))
                 .hour(monitoringMapper.getHourData(userId, userLoc))
@@ -89,7 +103,7 @@ public class MonitoringService {
 
         MyMqttClient client = new MyMqttClient(pdk);
         client.init("tcp://3.37.2.34:1883", "solar")
-                .subscribe(new String[]{"temperature", "humidity", "panelCover","angular","panelTemperature","illumination","lastCleanTime"});
+                .subscribe(new String[]{"temperature", "humidity", "panelCover","angular","panelTemperature","illumination","lastCleanTime","iring"});
 
 
         client.initConnectionLost((arg) -> {  //콜백행위1, 서버와의 연결이 끊기면 동작
@@ -177,8 +191,6 @@ public class MonitoringService {
         HashMap<Object, Object> minuteData = subscribeMqtt(userId);
 
 
-
-
         return MinuteMqtt.builder()
                 .temperature(minuteData.get("temperature"))
                 .humidity(minuteData.get("humidity"))
@@ -192,30 +204,26 @@ public class MonitoringService {
 
     public void sethRealPower(String userId, String value){
 
-        System.out.println(userId);
+        ServerTime serverTime = getServerTime();
+        String year = serverTime.getYear();
+        String month = serverTime.getMonth();
+        String day = serverTime.getDay();
+        String hour = serverTime.getHour();
+        String minute = serverTime.getMinute();
 
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy");
-        SimpleDateFormat format2 = new SimpleDateFormat("MM");
-        SimpleDateFormat format3 = new SimpleDateFormat("dd");
-        SimpleDateFormat format4 = new SimpleDateFormat("HH");
-
-        String year = format1.format(System.currentTimeMillis());
-        String month = format2.format(System.currentTimeMillis());
-        String day = format3.format(System.currentTimeMillis());
-        String hour = format4.format(System.currentTimeMillis());
+        System.out.println(year + month + day + hour + minute );
 
         monitoringMapper.sethRealPower(year,month, day, hour, value, userId);
         System.out.println("hRealdb 입력완료");
     }
 
     public void setdRealPower(String userId, String value) {
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy");
-        SimpleDateFormat format2 = new SimpleDateFormat("MM");
-        SimpleDateFormat format3 = new SimpleDateFormat("dd");
 
-        String year = format1.format(System.currentTimeMillis());
-        String month = format2.format(System.currentTimeMillis());
-        String day = format3.format(System.currentTimeMillis());
+        ServerTime serverTime = getServerTime();
+        String year = serverTime.getYear();
+        String month = serverTime.getMonth();
+        String day = serverTime.getDay();
+
 
         String dRealId = year + month + day + userId;
 
@@ -230,13 +238,13 @@ public class MonitoringService {
     }
 
     public void setmRealPower(String userId, String value) {
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy");
-        SimpleDateFormat format2 = new SimpleDateFormat("MM");
 
-        String year = format1.format(System.currentTimeMillis());
-        String month = format2.format(System.currentTimeMillis());
+        ServerTime serverTime = getServerTime();
+        String year = serverTime.getYear();
+        String month = serverTime.getMonth();
 
         String mRealId = year + month + userId;
+
 
         try {
             monitoringMapper.setmRealPower(mRealId, year, month, value, userId);
@@ -246,6 +254,31 @@ public class MonitoringService {
             monitoringMapper.updatemRealPower(mRealId, value);
             System.out.println("mRealdb 업데이트 완료");
         }
+
+//        monitoringMapper.setmRealPower(mRealId, year, month, value, userId);
+//        System.out.println("mRealdb 입력완료");
+
+    }
+
+    public ServerTime getServerTime(){
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy");
+        SimpleDateFormat format2 = new SimpleDateFormat("MM");
+        SimpleDateFormat format3 = new SimpleDateFormat("dd");
+        SimpleDateFormat format4 = new SimpleDateFormat("HH");
+        SimpleDateFormat format5 = new SimpleDateFormat("mm");
+
+        String year = format1.format(System.currentTimeMillis());
+        String month = format2.format(System.currentTimeMillis());
+        String day = format3.format(System.currentTimeMillis());
+        String hour = format4.format(System.currentTimeMillis());
+        String minute = format5.format(System.currentTimeMillis());
+
+        return ServerTime.builder()
+                .year(year)
+                .month(month)
+                .day(day)
+                .hour(hour)
+                .minute(minute).build();
     }
 
 
