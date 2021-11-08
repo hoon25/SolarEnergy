@@ -19,6 +19,7 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
 
     // 회원가입
+
     public void create(Map<String, String> member) {
         memberMapper.insertUser(Member.builder()
             .userId(member.get("userId"))

@@ -48,7 +48,7 @@
                       ON hp.hour = hr.hour
                  JOIN location_tb as location
                       ON hp.locCode = location.locCode
-        where hr.userId = #{userId} and location.locName = #{userLoc} and hp.year = hr.year and hp.month = hr.month and hp.day = hr.day;
+        where hr.userId = #{userId} and location.locName = #{userLoc} and hp.year = hr.year and hp.month = hr.month and hp.day = hr.day and hp.day = #{day};
     </select>
 
     <select id="getWeatherFctData" parameterType="String" resultType="solar.server.domain.monitoring.WeatherFct">

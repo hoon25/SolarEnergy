@@ -4,10 +4,7 @@ package solar.server.controller;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import solar.server.service.PanelStatusService;
 
 import javax.annotation.Resource;
@@ -15,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @RequiredArgsConstructor
+//@CrossOrigin(origins = "http://localhost:8080/panelstatus")
 @RequestMapping("/panelstatus")
 @RestController
 public class PanelStatusController {

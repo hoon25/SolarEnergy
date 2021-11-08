@@ -1,10 +1,7 @@
 package solar.server.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import solar.server.domain.SearchEnergyPredic;
 import solar.server.domain.vo.SearchVO;
 import solar.server.service.SearchEnergyPredicService;
@@ -13,6 +10,7 @@ import java.util.List;
 
 
 @RequiredArgsConstructor
+//@CrossOrigin(origins = "http://localhost:8080/searchpredic")
 @RequestMapping("/searchpredic")
 @RestController
 public class SearchEnergyPredicController {

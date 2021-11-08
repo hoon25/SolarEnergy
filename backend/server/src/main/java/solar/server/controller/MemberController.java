@@ -3,6 +3,7 @@ package solar.server.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @RequiredArgsConstructor
+//@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class MemberController {
 
@@ -30,7 +32,6 @@ public class MemberController {
         memberService.create(member);
         System.out.println(member);
     }
-
 
     //     로그인
     @PostMapping("/login")

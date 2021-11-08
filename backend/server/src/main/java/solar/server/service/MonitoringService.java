@@ -78,7 +78,7 @@ public class MonitoringService {
                 .sunTime(monitoringMapper.getSunTimeData(month,day))
                 .month(monitoringMapper.getMonthData(userId, userLoc))
                 .day(monitoringMapper.getDayData(userId, userLoc))
-                .hour(monitoringMapper.getHourData(userId, userLoc))
+                .hour(monitoringMapper.getHourData(userId, userLoc, day))
                 .minuteMqtt(minuteMqtt)
                 .build();
 

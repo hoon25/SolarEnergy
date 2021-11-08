@@ -18,7 +18,7 @@ public interface MonitoringMapper {
 
     List<Month> getMonthData(@Param("userId") String userId, @Param("userLoc") String userLoc);
     List<Day> getDayData(@Param("userId") String userId, @Param("userLoc") String userLoc);
-    List<Hour> getHourData(@Param("userId") String userId, @Param("userLoc") String userLoc);
+    List<Hour> getHourData(@Param("userId") String userId, @Param("userLoc") String userLoc, @Param("day") String day);
 
 
     void sethRealPower(@Param("year")String year, @Param("month")String month, @Param("day")String day, @Param("hour")String hour, @Param("hRealPower") String value, @Param("userId")String userId );

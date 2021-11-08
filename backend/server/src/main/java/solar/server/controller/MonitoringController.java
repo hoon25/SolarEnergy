@@ -2,16 +2,14 @@ package solar.server.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import solar.server.domain.Monitoring;
 import solar.server.service.MonitoringService;
 
 
 
 @RequiredArgsConstructor
+//@CrossOrigin(origins = "http://localhost:8080/monitoring")
 @RestController
 @RequestMapping("/monitoring")
 public class MonitoringController {
